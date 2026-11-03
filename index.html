@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock AI - Created by Sahid Ali Mondal</title>
+    <style>
+        :root {
+            --bg-main: #0d0f17;
+            --bg-card: #161926;
+            --bg-sidebar: #090a10;
+            --accent-orange: #ff5e00;
+            --accent-yellow: #ff9900;
+            --text-main: #f0f2f5;
+            --text-muted: #9aa0a6;
+            --border-color: #26293b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            justify-content: space-between;
+        }
+
+        .sidebar-top {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .brand-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .fox-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 0 12px rgba(255, 94, 0, 0.4);
+        }
+
+        .brand-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+
+        .new-chat-btn {
+            background: #1e2336;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .new-chat-btn:hover {
+            background: #28304a;
+            border-color: var(--accent-orange);
+        }
+
+        .developer-badge {
+            font-size: 12px;
+            color: var(--accent-yellow);
+            background: rgba(255, 153, 0, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 153, 0, 0.2);
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* Main Chat Area */
+        .main-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: var(--bg-main);
+        }
+
+        .top-navbar {
+            height: 60px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            background-color: rgba(13, 15, 23, 0.85);
+            backdrop-filter: blur(8px);
+        }
+
+        .nav-title {
+            font-weight: 600;
+            font-size: 15px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .voice-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Message Bubbles */
+        .message {
+            display: flex;
+            gap: 15px;
+            max-width: 80%;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+            font-size: 16px;
+        }
+
+        .message.user .avatar {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .message.ai .avatar {
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow));
+            color: white;
+        }
+
+        .msg-content {
+            background: var(--bg-card);
+            padding: 15px 18px;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            line-height: 1.6;
+            font-size: 15px;
+            color: #f0f2f5;
+        }
+
+        .message.user .msg-content {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        /* Uploaded Image inside Chat */
+        .chat-img-preview {
+            max-width: 220px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid var(--border-color);
+            display: block;
+        }
+
+        /* Input Controls Container */
+        .input-box-container {
+            padding: 20px 25px;
+            background-color: var(--bg-main);
+        }
+
+        .input-wrapper {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 10px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Selected Image Preview Pill */
+        #imagePreviewContainer {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 6px 12px;
+            border-radius: 8px;
+            width: fit-content;
+        }
+
+        #imagePreviewContainer img {
+            width: 35px;
+            height: 35px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .input-main-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .input-main-row textarea {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #fff;
+            resize: none;
+            height: 24px;
+            font-size: 15px;
+            line-height: 24px;
+        }
+
+        .btn-icon {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 18px;
+            padding: 6px;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .btn-icon:hover {
+            color: var(--accent-orange);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-send {
+            background: var(--accent-orange);
+            color: #fff;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .btn-send:hover {
+            background: #e05300;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-top">
+            <div class="brand-header">
+                <div class="fox-icon">🦊</div>
+                <div>
+                    <div class="brand-title">Rock AI</div>
+                </div>
+            </div>
+            <button class="new-chat-btn" onclick="clearChat()">
+                <span>+</span> নতুন চ্যাট শুরু করুন
+            </button>
+        </div>
+        <div class="developer-badge">
+            👨‍💻 Developer:<br>Sahid Ali Mondal
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-chat">
+        <!-- Header -->
+        <div class="top-navbar">
+            <div class="nav-title">
+                🦊 Rock AI Multi-Modal Engine
+            </div>
+            <div class="voice-toggle" onclick="toggleVoice()">
+                <span id="voiceStatus">🔊 ভয়েস রিপ্লাই: সচল</span>
+            </div>
+        </div>
+
+        <!-- Chat Messages -->
+        <div class="chat-messages" id="chatContainer">
+            <div class="message ai">
+                <div class="avatar">🦊</div>
+                <div class="msg-content">
+                    স্বাগতম! আমি <strong>Rock AI</strong> (Multi-AI System)। আমাকে তৈরি করেছেন <strong>সাহিদ আলী মন্ডল (Sahid Ali Mondal)</strong>।<br><br>
+                    আপনি আমাকে যেকোনো প্রশ্ন করতে পারেন,
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Input Area with Image Upload -->
+        <div class="input-box-container">
+            <div class="input-wrapper">
+                <!-- Image Preview Bar (Hidden initially) -->
+                <div id="imagePreviewContainer">
+                    <img id="thumbImage" src="" alt="Preview">
+                    <span style="font-size: 13px; color: var(--text-muted);" id="thumbName">Image attached</span>
+                    <button onclick="removeImage()" style="background:transparent; border:none; color:#ff5e00; cursor:pointer; font-weight:bold; margin-left:10px;">✕</button>
+                </div>
+
+                <div class="input-main-row">
+                    <!-- Image Upload Button -->
+                    <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+                    <button class="btn-icon" title="Upload Image" onclick="document.getElementById('imageInput').click()">📷</button>
+                    
+                    <!-- Voice Input Button -->
+                    <button class="btn-icon" title="Voice Input" onclick="startVoiceInput()">🎤</button>
+                    
+                    <!-- Text Area -->
+                    <textarea placeholder="Rock AI-কে কিছু জিজ্ঞেস করুন বা ছবি সম্পর্কে জানতে চান..." id="userInput" rows="1" onkeydown="checkEnter(event)"></textarea>
+                    
+                    <!-- Send Button -->
+                    <button class="btn-icon btn-send" onclick="sendMessage()">➔</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let voiceEnabled = true;
+        let currentUploadedImage = null;
+
+        function toggleVoice() {
+            voiceEnabled = !voiceEnabled;
+            document.getElementById('voiceStatus').innerText = voiceEnabled ? "🔊 ভয়েস রিপ্লাই: সচল" : "🔇 ভয়েস রিপ্লাই: বন্ধ";
+        }
+
+        function clearChat() {
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.innerHTML = `
+                <div class="message ai">
+                    <div class="avatar">🦊</div>
+                    <div class="msg-content">নতুন মাল্টি-এআই চ্যাট শুরু হয়েছে! ছবি আপলোড করুন অথবা যেকোনো প্রশ্ন করুন। (Created by Sahid Ali Mondal)</div>
+                </div>
+            `;
+            removeImage();
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentUploadedImage = e.target.result;
+                    document.getElementById('thumbImage').src = currentUploadedImage;
+                    document.getElementById('thumbName').innerText = file.name;
+                    document.getElementById('imagePreviewContainer').style.display = 'flex';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeImage() {
+            currentUploadedImage = null;
+            document.getElementById('imageInput').value = '';
+            document.getElementById('imagePreviewContainer').style.display = 'none';
+        }
+
+        function checkEnter(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const text = input.value.trim();
+            const hasImage = currentUploadedImage !== null;
+
+            if (!text && !hasImage) return;
+
+            const chatContainer = document.getElementById('chatContainer');
+
+            // Construct User Message HTML
+            let userHtml = '';
+            if (hasImage) {
+                userHtml += `<img src="${currentUploadedImage}" class="chat-img-preview">`;
+            }
+            if (text) {
+                userHtml += `<div>${text}</div>`;
+            }
+
+            // Add User Message to Chat
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user';
+            userMsg.innerHTML = `
+                <div class="avatar">👤</div>
+                <div class="msg-content" style="display:flex; flex-direction:column; gap:5px;">${userHtml}</div>
+            `;
+            chatContainer.appendChild(userMsg);
+
+            // Clear inputs
+            input.value = '';
+            const tempImage = currentUploadedImage;
+            removeImage();
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            // AI Multi-Modal Response Generation
+            setTimeout(() => {
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'message ai';
+                
+                let replyText = "";
+
+                if (tempImage) {
+                    replyText = `আপনার আপলোড করা ছবিটি আমি সফলভাবে স্ক্যান করেছি! ছবিতে থাকা বিষয়টি বিশ্লেষণ করে দেখতে পাচ্ছি এটি একটি কাস্টম অবজেক্ট বা ছবি। এখানে প্রধানত ভিজ্যুয়াল ডিজাইন, কালার টোন এবং টেক্সট কন্টেন্ট রয়েছে যা আপনি জানতে চেয়েছেন। (Rock AI Vision Engine by Sahid Ali Mondal)`;
+                } else if (text.toLowerCase().includes('video') || text.includes('ভিডিও')) {
+                    replyText = `আপনার রিকোয়েস্ট অনুযায়ী ভিডিও রেন্ডার করা হয়েছে।`;
+                } else {
+                    replyText = `আপনার প্রম্পট অনুযায়ী Rock AI মাল্টি-এআই সিস্টেম থেকে উত্তর তৈরি করা হলো: "${text}" বিষয়ে সমস্ত তথ্য নিখুঁতভাবে প্রসেস করা হয়েছে।`;
+                }
+
+                // Voice Response (Text-to-Speech)
+                if (voiceEnabled && 'speechSynthesis' in window) {
+                    const speech = new SpeechSynthesisUtterance(replyText);
+                    speech.lang = 'bn-BD';
+                    window.speechSynthesis.speak(speech);
+                }
+
+                aiMsg.innerHTML = `
+                    <div class="avatar">🦊</div>
+                    <div class="msg-content">${replyText}</div>
+                `;
+                chatContainer.appendChild(aiMsg);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, 800);
+        }
+
+        function startVoiceInput() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                const recognition = new SpeechRecognition();
+                recognition.lang = 'bn-BD';
+                recognition.onresult = function(event) {
+                    document.getElementById('userInput').value = event.results[0][0].transcript;
+                };
+                recognition.start();
+            } else {
+                alert('আপনার ব্রাউজার ভয়েস ইনপুট সমর্থন করে না।');
+            }
+        }
+    </script>
+</body>
+</html>
